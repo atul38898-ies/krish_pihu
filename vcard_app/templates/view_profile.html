@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ profile.user.username }} - Profile</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://jsdelivr.net" rel="stylesheet">
+    <style>
+        body { background-color: #f4f7f6; }
+        .profile-card { max-width: 650px; margin: 50px auto; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); background: #fff; padding: 30px; }
+        .profile-img { width: 130px; height: 130px; object-fit: cover; border-radius: 50%; border: 4px solid #0d6efd; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="profile-card">
+        <div class="d-flex align-items-center mb-4">
+            <img src="{{ profile.profile_pic.url }}" alt="Profile Picture" class="profile-img me-4">
+            <div>
+                <h2 class="mb-0">{{ profile.user.first_name }} {{ profile.user.last_name }}</h2>
+                <p class="text-muted mb-1">@{{ profile.user.username }}</p>
+                <span class="badge bg-primary">{{ profile.headline }}</span>
+                <p class="text-secondary mt-2 mb-0">📍 {{ profile.location }}</p>
+            </div>
+        </div>
+
+        <p class="lead fs-6">{{ profile.bio }}</p>
+
+        {% if skills_list %}
+        <div class="mb-3">
+            <strong>Skills:</strong><br>
+            {% for skill in skills_list %}
+                <span class="badge bg-light text-dark border me-1 mt-1">{{ skill }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <hr>
+
+        <!-- सोशल लिंक्स और एक्शन बटन्स -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                {% if profile.github_link %}
+                    <a href="{{ profile.github_link }}" target="_blank" class="btn btn-outline-dark btn-sm me-1">GitHub</a>
+                {% endif %}
+                {% if profile.linkedin_link %}
+                    <a href="{{ profile.linkedin_link }}" target="_blank" class="btn btn-outline-primary btn-sm">LinkedIn</a>
+                {% endif %}
+            </div>
+
+            <div class="d-flex gap-2">
+                <!-- नया Save Contact (.vcf) बटन -->
+                <a href="{% url 'download_vcard' profile.user.username %}" class="btn btn-success btn-sm">📇 Save Contact</a>
+
+                <!-- नया Copy Link बटन -->
+                <button onclick="copyProfileLink()" id="copyBtn" class="btn btn-outline-secondary btn-sm">🔗 Copy Link</button>
+
+                {% if request.user == profile.user %}
+                    <a href="{% url 'edit_profile' %}" class="btn btn-primary btn-sm">✏️ Edit</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- QR Code Section -->
+        {% if profile.qr_code %}
+        <div class="text-center mt-4 pt-3 border-top">
+            <p class="text-muted small mb-2">Scan to share digital visiting card</p>
+            <img src="{{ profile.qr_code.url }}" alt="Profile QR Code" width="140" class="img-thumbnail">
+            <div class="mt-2">
+                <a href="{{ profile.qr_code.url }}" download="qr_{{ profile.user.username }}.png" class="btn btn-sm btn-outline-secondary">⬇️ Download QR</a>
+            </div>
+        </div>
+        {% endif %}
+
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Logout</button>
+        </form>
+
+    </div>
+</div>
+
+<!-- Copy Link के लिए JavaScript -->
+<script>
+    function copyProfileLink() {
+        const currentUrl = window.location.href;
+        navigator.clipboard.writeText(currentUrl).then(() => {
+            const btn = document.getElementById('copyBtn');
+            btn.innerText = '✅ Copied!';
+            btn.classList.replace('btn-outline-secondary', 'btn-dark');
+            
+            setTimeout(() => {
+                btn.innerText = '🔗 Copy Link';
+                btn.classList.replace('btn-dark', 'btn-outline-secondary');
+            }, 2000);
+        });
+    }
+</script>
+
+</body>
+</html>
