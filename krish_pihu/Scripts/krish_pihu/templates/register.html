@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <link href="https://jsdelivr.net" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5" style="max-width: 500px;">
+        <div class="card shadow p-4">
+            <h2 class="text-center mb-4">Create New Account</h2>
+            
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary w-100 mt-3">Sign Up</button>
+            </form>
+
+            <div class="text-center mt-3">
+                <small>Pehle se account hai? <a href="{% url 'login' %}">Login karein</a></small>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
