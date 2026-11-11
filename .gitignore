@@ -1,1 +1,6 @@
-krish_pihu/ 
+/krish_pihu/Include/ 
+/krish_pihu/Lib/ 
+/krish_pihu/pyvenv.cfg 
+/krish_pihu/Scripts/*.exe 
+/krish_pihu/Scripts/activate* 
+__pycache__/ 
